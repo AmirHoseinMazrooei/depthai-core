@@ -25,8 +25,8 @@ class EstimateConfig:
     single_view_correction: float = 1.85
 
 
-def build_pipeline(model_name: str) -> tuple[dai.Pipeline, dai.node.DetectionNetwork]:
-    pipeline = dai.Pipeline()
+def build_pipeline(device: dai.Device, model_name: str) -> tuple[dai.Pipeline, dai.node.DetectionNetwork]:
+    pipeline = dai.Pipeline(device)
 
     cam = pipeline.create(dai.node.Camera)
     left = pipeline.create(dai.node.Camera)
@@ -169,7 +169,7 @@ def main() -> None:
     )
 
     with dai.Device() as device:
-        pipeline, nn = build_pipeline(args.model)
+        pipeline, nn = build_pipeline(device, args.model)
         q_rgb = nn.passthrough.createOutputQueue(maxSize=4, blocking=False)
         q_det = nn.out.createOutputQueue(maxSize=4, blocking=False)
 
